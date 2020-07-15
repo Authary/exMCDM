@@ -159,7 +159,6 @@ def ParetoDepth(ranks,depth):
         for p in P:
             R = np.array(list(R)+[p])
             np.delete(nrank,p,0)
-        print(R)
         
     return R
 
@@ -315,58 +314,65 @@ def complem(S,rankings):
         R.remove(s)
     return list(R)
 
+
 #Associates to a criterion set CP its Pareto front
-def CP2Pareto(CP,rankings):
+def CP2Pareto(CP,rankings,depth):
     if len(CP) == 0:
         return []
     else:
-        return Pareto(rankings[:, CP])
+        return ParetoDepth(rankings[:, CP],depth)
+
 
 #Associates to a Pareto front the lectically-maximal, minimal set of criteria that produce it
-def Pareto2CP(pareto, B, rankings):
+def Pareto2CP(pareto, B, rankings, depth):
     S = copy.deepcopy(B)
     for i in reversed(range(rankings.shape[1])):
         if i not in S:
             X = copy.deepcopy(S)
             X.append(i)
-            P = CP2Pareto(complem(X, rankings), rankings)
+            P = CP2Pareto(complem(X, rankings), rankings, depth)
             if set(P)==set(pareto):
                 S.append(i)
     return S
+
     
 #Generates the next closed set of criteria
-def oplusPF(A, a, rankings):
+def oplusPF(A, a, rankings, depth):
     B = [i for i in A if i < a]
     B.append(a)
-    B = Pareto2CP(CP2Pareto(complem(B, rankings), rankings), B, rankings)
+    B = Pareto2CP(CP2Pareto(complem(B, rankings), rankings, depth), B, rankings, depth)
     return B
 
+
 #Generates the next closed set of criteria in the lectic order
-def NextPF(A, rankings):
+def NextPF(A, rankings, depth):
     for i in reversed(range(rankings.shape[1])):
         if i not in A:
-            B = oplusPF(A, i, rankings)
+            B = oplusPF(A, i, rankings, depth)
             if i == min(diff(B, A)):
                 return B
 
+
 #Computes the fixed points of the interior operator resulting from the compositions of CP2Pareto and Pareto2CP
-def NextClosurePF(rankings):
+def NextClosurePF(rankings,depth):
     A = []
     Concepts = []
     first = True
+    FP = ParetoDepth(rankings,depth)
+    rankings = np.array(rankings)[FP,:]
     while len(A) != rankings.shape[1]:
         if not first:
-            Concepts.append([complem(A, rankings), list(CP2Pareto(complem(A, rankings), rankings))])
+            Concepts.append([complem(A, rankings), list(CP2Pareto(complem(A, rankings), rankings, depth))])
         first = False
-        A = NextPF(A, rankings)
-    Concepts.append([complem(A, rankings), list(CP2Pareto(complem(A, rankings), rankings))])
+        A = NextPF(A, rankings, depth)
+    Concepts.append([complem(A, rankings), list(CP2Pareto(complem(A, rankings), rankings, depth))])
     return Concepts
 
 
 #Returns the minimal sets of criteria required to the alternative alt to appear on the Pareto front
-def minCritSets(alt, rankings):
+def minCritSets(alt, rankings, depth):
     R = []
-    Concepts = np.array(NextClosurePF(rankings))
+    Concepts = np.array(NextClosurePF(rankings, depth))
     last = []
     for i in reversed(range(Concepts.shape[0])):
         if alt in Concepts[i][1] and (last == [] or not contains(Concepts[i][0],last)):
@@ -376,11 +382,11 @@ def minCritSets(alt, rankings):
 
 
 #Returns interpretations of the reason why alternatives appear on the Pareto front according to background knowledge on the criteria
-def constructInterpretation(rankings, knowlCrit, knowledge):
-    PF = Pareto(rankings)
+def constructInterpretation(rankings, knowlCrit, knowledge, depth):
+    PF = ParetoDepth(rankings, depth)
     R = []
     for alt in PF:
-        MCS = minCritSets(alt, rankings)
+        MCS = minCritSets(alt, rankings, depth)
         uni = []
         for S in MCS:
             interprets = []
@@ -392,12 +398,3 @@ def constructInterpretation(rankings, knowlCrit, knowledge):
             uni = union(uni,intersec)
         R.append(uni)
     return R
-        
-                
-                
-    
-
-            
-            
-            
-            
