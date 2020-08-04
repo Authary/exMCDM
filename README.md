@@ -82,13 +82,13 @@ INPUT: the rankings (rankings), knowledge about the criteria (knowlCrit), the ba
 OUTPUT: A list of lists of terms. The ith list explains the presence of the ith alternative in the output of ParetoDepth(rankings,depth).
 
 
-*<aggregation function>(rankings)* [Borda, Condorcet, Copeland, Majority, Bucklin]<br/>
-INPUT: the rankings
+*\<aggregation function\>(rankings)* [Borda, Condorcet, Copeland, Majority, Bucklin]<br/>
+INPUT: the rankings<br/>
 OUTPUT: a list of the scores of each alternative
   
   
-*Rank(Scores)*
-INPUT: a list of the scores of each alternative
+*Rank(Scores)*<br/>
+INPUT: a list of the scores of each alternative<br/>
 OUTPUT: a ranking of the alternatives
 
 
