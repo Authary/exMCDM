@@ -102,5 +102,5 @@ knowlCrit = loadKnowledgeCriteria("criteria.txt")
 #Explain the presence of alternatives on the Pareto front<br/>
 Explanation = constructInterpretation(ranks, knowlCrit, knowl, 1)
 
-#Rank the alternatives according the Condorcet method
+#Rank the alternatives according the Condorcet method<br/>
 newRanks = Ranks(Condorcet(ranks))
