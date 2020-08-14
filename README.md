@@ -8,6 +8,9 @@ Functionalities:<br/>
 -Rankings x Knowledge -> Explanation of the reasons why alternatives appears on the Pareto front<br/>
 -Rankings -> Aggregated ranking (Borda, Condorcet, Copeland, Majority, Bucklin)
 
+It is based on<br/>
+-*Explaining multicriteria decision making with formal concept analysis*. Alexandre Bazin, Miguel Couceiro, Marie-Dominique Devignes and Amedeo Napoli. CLA 2020.
+
 # LEGAL STUFF
 
 You are free to use this module.<br/>
